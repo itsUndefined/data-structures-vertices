@@ -275,4 +275,3 @@ void Array::expand(int id, int x){
         neighbors[id] *= 2;
     }
 }
-
