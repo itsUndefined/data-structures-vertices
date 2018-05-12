@@ -10,20 +10,29 @@ AVLTree::AVLTree()
     //dtor
 }*/
 
-void AVLTree::Insert(int a,int b)
+Node *AVLTree::Insert(int a,int b)
 {
     if(root==NULL)
-        root=&a;
-    if (b<a)
     {
-        p_left->b;
-        p_right=NULL;
+        root=new Node;
+        root->data=a;
+        root->p_left=NULL;
+        root->p_right=NULL;
     }
-    if(b>a)
+    else_if (b < root->data)
     {
-        p_right->b;
-        p_left=NULL;
+        root->p_left=b;
+        root->p_right=NULL;
+        root=HeightCheck(root);
     }
+    else_if(b > root->data)
+    {
+        root->p_left=NULL;
+        root->p_right=b;
+        root = HeightCheck(root);
+    }
+    return root;
+
 }
 void AVLTree::Delete(int a,int b)
 {
@@ -35,25 +44,47 @@ void AVLTree::Search(int a)
 
 
 }
-void AVLTree::rotation_L()
+int AVLTree::setHeight(Node *temp)
 {
+    int height=0;
+    if(temp!=NULL)
+    {
+        int leftheight=setHeight(temp->p_left);
+        int rightheight=setHeight(temp->p_right);
+        int maximumh=max(leftheight,rightheight);
+        maximumh=height+1;
+    }
+    return height;
+
+}
+Node *AVLTree::checkHeight(Node *temp)
+{
+   int leftheight=setHeight(temp->p_left);
+   int rightheight=setHeight(temp->p_right);
+   int diff=abs(leftheight-rightheight);
+   if(diff<=1)
+    return diff;
+   else_if(diff>1)
+   {
+
+   }
 
 
 }
-void AVLTree::rotation_R()
+Node *AVLTree::rotation_L(Node *temp)
 {
 
 }
-void AVLTree::rotation_LR()
+Node *AVLTree::rotation_R(Node *temp)
 {
 
 }
-void AVLTree::rotation_RL()
+Node *AVLTree::rotation_LR(Node *temp)
 {
 
 }
-void AVLTree::checkHeight()
+Node *AVLTree::rotation_RL(Node *temp)
 {
 
-
 }
+

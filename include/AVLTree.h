@@ -15,11 +15,12 @@ class AVLTree
     protected:
 
     private:
-        void rotation_L();
-        void rotation_R();
-        void rotation_LR();
-        void rotation_RL();
-        void checkHeight();
+        void rotation_L(Node *);
+        void rotation_R(Node *);
+        void rotation_LR(Node *);
+        void rotation_RL(Node *);
+        void checkHeight(Node *);
+        int setHeight(Node *);
         struct Node
         {
             int data;
