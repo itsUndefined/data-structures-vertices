@@ -8,7 +8,7 @@ class AVLTree
         AVLTree();
         virtual ~AVLTree();
         void Insert(int a,int b);
-        void Delete(int a,int b);
+        void Purge(int a,int b);
         int Search(int a);
 
 
