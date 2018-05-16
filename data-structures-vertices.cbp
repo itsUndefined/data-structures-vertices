@@ -33,11 +33,9 @@
 			<Add option="-fexceptions" />
 		</Compiler>
 		<Unit filename="include/AVLTree.h" />
-		<Unit filename="include/Array.h" />
 		<Unit filename="include/CommandReader.h" />
 		<Unit filename="main.cpp" />
 		<Unit filename="src/AVLTree.cpp" />
-		<Unit filename="src/Array.cpp" />
 		<Unit filename="src/CommandReader.cpp" />
 		<Extensions>
 			<code_completion />

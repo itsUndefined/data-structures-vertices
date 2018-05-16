@@ -8,6 +8,14 @@ class CommandReader{
     public:
         CommandReader();
         ~CommandReader();
+        /** \brief
+         *
+         * \param command std::string&
+         * \param node int&
+         * \param neighbor int&
+         * \return bool
+         *
+         */
         bool readNextCommand(std::string& command, int& node, int& neighbor); //Returns the number of arguments given or -1 for end of file
 
     private:

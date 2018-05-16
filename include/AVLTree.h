@@ -1,14 +1,20 @@
 #ifndef AVLTREE_H
 #define AVLTREE_H
 
-#include <vector>
-
+struct Node
+        {
+            int height;
+            int value;
+            struct Node *left_child;
+            struct Node *right_child;
+        };
 class AVLTree
 {
     public:
         AVLTree();
         ~AVLTree();
         void Insert(int value);
+        Node*Insert(int a,Node *p);
         void Purge();
         int& Search();
 
@@ -16,20 +22,12 @@ class AVLTree
     protected:
 
     private:
-        void rotation_L(Node *);
-        void rotation_R(Node *);
-        void rotation_LR(Node *);
-        void rotation_RL(Node *);
+        Node* rotation_L(Node *);
+        Node* rotation_R(Node *);
+        Node* rotation_LR(Node *);
+        Node* rotation_RL(Node *);
         int setHeight(Node *);
         int Max(int a,int b);
-        struct Node
-        {
-            int height;
-            struct Node *root;
-            struct Node *left_child;
-            struct Node *right_child;
-            int *neighbors;
-        };
         struct Node head;
 
 
