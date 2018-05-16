@@ -5,131 +5,110 @@ AVLTree::AVLTree()
     root=NULL;
 }
 
-/*AVLTree::~AVLTree()
+AVLTree::~AVLTree()
 {
     //dtor
-}*/
-
-Node *AVLTree::Insert(int a,int b)
-{
-    if(root==NULL)
-    {
-        root=new Node;
-        root->data=a;
-        root->p_left=NULL;
-        root->p_right=NULL;
-    }
-    else_if (b < root->data)
-    {
-        root->p_left=b;
-        root->p_right=NULL;
-        root=HeightCheck(root);
-    }
-    else_if(b > root->data)
-    {
-        root->p_left=NULL;
-        root->p_right=b;
-        root = HeightCheck(root);
-    }
-    return root;
-
 }
-void AVLTree::Purge(int a,int b)
+void Insert(int a)
 {
-
-
-
-
-
-
+    root=Insert(int a,root)
 }
-void AVLTree::Search(int a)
+Node *AVLTree::Insert(int a,Node *p)
 {
+    if(p==NULL)
+    {
+        p=new Node;
+        p->value=a;
+        p->left_child=NULL;
+        p->right_child=NULL;
 
+    }
+    if (a < p->data)
+    {
+        p->left_child=Insert(a,p->left_child)
+        //ROTATIONS
 
-
-
-
-
-
-
-
-
-
+    }
+    if (a > p->data)
+    {
+        p->right_child=Insert(a,p->right_child)
+        //ROTATIONS
+    }
+    p->height=Max(setHeight(p->left_child), setHeight(p->right_child)) + 1
+    return p;
 }
+
 int AVLTree::setHeight(Node *temp)
 {
-    int height=0;
-    if(temp!=NULL)
-    {
-        int leftheight=setHeight(temp->p_left);
-        int rightheight=setHeight(temp->p_right);
-        int maximumh=max(leftheight,rightheight);
-        maximumh=height+1;
-    }
-    return height;
-
+    if(temp=NULL)
+        return -1;
+    return temp->height;
 }
-Node *AVLTree::checkHeight(Node *temp)
+int AVLTree::Max(int a,int b)
 {
-   int leftheight=setHeight(temp->p_left);
-   int rightheight=setHeight(temp->p_right);
-   int diff=abs(leftheight-rightheight);
-   if(diff<=1)
-    return diff;
-   if(diff>1)
-   {
-       if(rightheight>leftheight)
-       {
-           rotation_L(temp);
-           if
-
-       }
-       if (leftheight>rightheight)
-       {
-           rotation_R(temp);
-           if
-
-       }
-
-
-   }
-
-
+    if(a>b)
+        return a;
+    if(b>a)
+        return b;
+    if (a=b)
+        return a;
 }
+
 Node *AVLTree::rotation_L(Node *temp)
 {
     Node *temp1;
-    temp1=temp->p_left; //p_right
-    temp1->p_left=temp->p_right; //temp
-    temp1->p_right=temp; //p_left
+    temp1=temp->left_child;
+    temp1->left_child=temp->right_child;
+    temp1->right_child=temp->root;
     return temp1;
 
 }
 Node *AVLTree::rotation_R(Node *temp)
 {
     Node *temp2;
-    temp2=temp->p_right; //p_left
-    temp2->p_right=temp->p_left; //temp
-    temp2->p_left=temp; //p_right
+    temp2=temp->right_child;
+    temp2->right_child=temp->left_child;
+    temp2->left_child=temp->root;
     return temp2;
 }
 Node *AVLTree::rotation_LR(Node *temp)
 {
     Node *temp1;
-    temp1=temp->p_left;
-    temp1->p_left=temp->p_right;
-    temp1->p_right=temp;
+    temp1=temp->left_child;
+    temp1->left_child=temp->right_child;
+    temp1->right_child=temp->root;
     rotation_R(temp1);
 
 }
 Node *AVLTree::rotation_RL(Node *temp)
 {
     Node *temp2;
-    temp2=temp->p_right;
-    temp2->p_right=temp->p_left;
-    temp2->p_left=temp;
+    temp2=temp->right_child;
+    temp2->right_child=temp->left_child;
+    temp2->left_child=temp->root;
     rotation_L(temp2);
 
 }
+/* void AVLTree::Purge(int a,int b)
+{
 
+
+
+
+
+
+}
+int& AVLTree::Search(int a)
+{
+
+
+
+
+
+
+
+
+
+
+
+}*/
