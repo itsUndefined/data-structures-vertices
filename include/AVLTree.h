@@ -14,7 +14,6 @@ class AVLTree
         AVLTree();
         ~AVLTree();
         void Insert(int value);
-        Node*Insert(int a,Node *p);
         void Purge();
         int& Search();
 
@@ -22,6 +21,7 @@ class AVLTree
     protected:
 
     private:
+        Node* Insert(int a,Node *p);
         Node* rotation_L(Node *);
         Node* rotation_R(Node *);
         Node* rotation_LR(Node *);
