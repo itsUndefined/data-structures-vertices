@@ -1,5 +1,5 @@
 #include "AVLTree.h"
-
+#include <cmath>
 
 AVLTree::AVLTree()
 {
@@ -28,16 +28,12 @@ Node *AVLTree::Insert(int a,Node *p)
     if (a < p->value)
     {
         p->left_child=Insert(a,p->left_child);
-        //Right Rotations
-        //Otan exoume thema me deksi paidi aristerou ypodentrou
-        //kanoume RL rotation
+        rebalance(p);
     }
     if (a > p->value)
     {
         p->right_child=Insert(a,p->right_child);
-       //Left Rotations
-       //Otan exoume thema me aristero paidi deksiou ypodentrou
-       //kanoume LR Rotations
+        rebalance(p);
 
     }
     p->height=Max(setHeight(p->left_child), setHeight(p->right_child)) + 1;
@@ -59,17 +55,48 @@ int AVLTree::Max(int a,int b)
     if (a==b)
         return a;
 }
+Node* AVLTree::rebalance(Node *p)
+{
+    int balance_factor = std::abs(setHeight(p->left_child - setHeight(p->right_child)));
+    if(balance_factor<=1)
+        return p;
+    if(balance_factor>1)
+    {
+        if(setHeight(p->left_child)>setHeight(p->right_child))
+            rotation_R(p);
+        if(setHeight(p->left_child)>setHeight(p->right_child)&&(setHeight(p->left_child->right_child)>setHeight(p->left_child->left_child)))
+            rotation_RL(p);
+        if(setHeight(p->right_child)>setHeight(p->left_child))
+            rotation_L(p);
+       if(setHeight(p->left_child) > setHeight(p->right_child) && (setHeight(p->right_child->left_child) > setHeight(p->right_child->right_child)))
+            rotation_LR(p);
 
+    }
+
+
+}
 Node *AVLTree::rotation_L(Node *temp)
 {
-
+    Node *temp2;
+    temp2=temp->right_child;
+    temp2->left_child=temp;
+    temp2->right_child=temp->right_child;
+    return temp2;
 }
 Node *AVLTree::rotation_R(Node *temp)
 {
-
+    Node *temp2;
+    temp2=temp->left_child;
+    temp2->right_child=temp;
+    temp2->left_child=temp->left_child;
+    return temp2;
 }
 Node *AVLTree::rotation_LR(Node *temp)
 {
+
+
+
+
 
 
 }
@@ -78,26 +105,3 @@ Node *AVLTree::rotation_RL(Node *temp)
 
 
 }
-/* void AVLTree::Purge(int a,int b)
-{
-
-
-
-
-
-
-}
-int& AVLTree::Search(int a)
-{
-
-
-
-
-
-
-
-
-
-
-
-}*/

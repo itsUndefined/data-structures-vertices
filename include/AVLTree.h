@@ -29,6 +29,7 @@ class AVLTree
         int setHeight(Node *);
         int Max(int a,int b);
         struct Node head;
+        Node* rebalance(Node *);
 
 
 };
