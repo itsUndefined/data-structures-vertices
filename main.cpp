@@ -2,76 +2,86 @@
 #include <string>
 #include <fstream>
 
-#include "include\CommandReader.h"
+#include "./include/CommandReader.h"
+
+#include "./include/Graph.h"
+
 
 using namespace std;
 
-void readInput();
-void executeCommands();
+template <class T, class Y> void executeCommands();
 
-int selectedDataStructure;
 
-int main(int argc, char **argv){
 
-    if(argc != 2){
-        cerr << "No argument given. Please use one argument of value 1, 2 or 3 to select data structure";
-        return -1;
-    }
-    if((string)argv[1] == "1"){
-        selectedDataStructure = 1;
-    } else if ((string)argv[1] == "2"){
-        selectedDataStructure = 2;
-    } else if ((string)argv[1] == "3"){
-        selectedDataStructure = 3;
-    } else {
-        cerr << "Invalid argument given. Please use one argument of value 1, 2 or 3 to select data structure";
-        return -1;
-    }
+int main(int argc, char **argv) {
+	if (argc != 2) {
+		cerr << "No argument given. Please use one argument of value 1, 2 or 3 to select data structure";
+		return -1;
+	}
 
-    executeCommands();
+	if ((string)argv[1] == "1") {
+		executeCommands<ArrayImplementation, NodeWithArray>();
+	}
+	else if ((string)argv[1] == "2") {
+		executeCommands<AVLTreeImplementation, NodeWithAVLTree>();
+	}
+	else if ((string)argv[1] == "3") {
+		executeCommands<HashTableImplementation, NodeWithHashTable>();
+	}
+	else {
+		cerr << "Invalid argument given. Please use one argument of value 1, 2 or 3 to select data structure";
+		return -1;
+	}
 
+	system("PAUSE");
 }
 
-void readInput(){
-    int node, neighbor;
-    ifstream input;
-    input.open("input.txt");
-    if(!input.is_open()){
-        throw "Error opening input.txt";
-    }
+template <class T, class Y> void readData(Graph<T, Y>* graph) {
+	int node, neighbor;
+	ifstream input;
+	input.open("input.txt");
+	if (!input.is_open()) {
+		throw "Error opening input.txt";
+	}
 
-    while(!input.eof()){
-        input >> node  >> neighbor;
-        cout << node << "/" << neighbor << endl;
-    }
-    input.close();
+	while (!input.eof()) {
+		input >> node >> neighbor;
+		graph->insertEdge(node, neighbor);
+	}
+
+	input.close();
 }
 
-void executeCommands(){
-    int node, neighbor;
-    string selectedCommand;
 
-    try {
-        CommandReader commandreader;
+template <class T, class Y> void executeCommands() {
+	Graph<T, Y> graph;
+	string selectedCommand;
+	int node, neighbor;
+	try {
+		CommandReader commandreader;
 
-        while(commandreader.readNextCommand(selectedCommand, node, neighbor)){
-            if(selectedCommand == "READ_DATA"){
+		while (commandreader.readNextCommand(selectedCommand, node, neighbor)) {
+			if (selectedCommand == "READ_DATA") {
+				readData<T, Y>(&graph);
+			}
+			else if (selectedCommand == "INSERT_LINK") {
+				graph.insertEdge(node, neighbor);
+			}
+			else if (selectedCommand == "DELETE_LINK") {
+				graph.deleteEdge(node, neighbor);
+			}
+			else if (selectedCommand == "FIND_NEIGHBORS") {
+				graph.findNeighbors(node); // OUTPUT.TXT
+			}
+			else if (selectedCommand == "FIND_NUM_CONNECTED_COMPONENTS") {
+				cout << graph.depthFirstSearch() << endl; // OUTPUT.TXT
+			}
 
-            } else if(selectedCommand == "WRITE_INDEX"){
-
-            } else if(selectedCommand == "INSERT_LINK"){
-
-            } else if(selectedCommand == "DELETE_LINK"){
-
-            } else if(selectedCommand == "FIND_NEIGHBORS"){
-
-            } else if(selectedCommand == "FIND_NUM_CONNECTED_COMPONENTS"){
-
-            }
-        }
-    } catch(string error) {
-        cerr << error;
-    }
+		}
+	}
+	catch (char const* error) {
+		cerr << error;
+	}
 
 
 }
