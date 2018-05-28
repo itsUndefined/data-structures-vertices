@@ -4,7 +4,7 @@ template <class T> AVLTree<T>::AVLTree() {
 	head = nullptr;
 }
 
-template <class T> AVLTree<T>::AVLTree(const AVLTree& obj) {
+template <class T> AVLTree<T>::AVLTree(const AVLTree& obj) { //Constructing the first node of the tree
 	head = nullptr;
 	preOrder(obj.head, [&](TreeNode<T>& currentNode) { //TODO: levelOrder maybe?
 		insert(currentNode.value);
@@ -26,7 +26,7 @@ template <class T> AVLTree<T>::~AVLTree() {
 	});
 }
 
-template <class T> void AVLTree<T>::insert(T value) {
+template <class T> void AVLTree<T>::insert(T value) { //Inserting new Nodes
 	if (head == nullptr) {
 		head = new TreeNode<T>(value);
 		return;
@@ -34,21 +34,21 @@ template <class T> void AVLTree<T>::insert(T value) {
 	insert(head, value);
 }
 
-template <class T> TreeNode<T>& AVLTree<T>::insert(TreeNode<T>* node, T& value) {
+template <class T> TreeNode<T>& AVLTree<T>::insert(TreeNode<T>* node, T& value) { //Inserting new nodes(using recursion)
 	if (node == nullptr) {
-		node = new TreeNode<T>(value);
+		node = new TreeNode<T>(value); //Creating new Node
 	}
 	else if (value < node->value) {
 		node->pLeft = &insert(node->pLeft, value);
-		node->pLeft->parent = node;
+		node->pLeft->parent = node; //Placing the value in the left child of the father if it's smaller than the parent
 	}
 	else if (value > node->value) {
-		node->pRight = &insert(node->pRight, value);
+		node->pRight = &insert(node->pRight, value); //Placing the value in the right child of the father if it's larger than the parent
 		node->pRight->parent = node;
 	}
 
-	recalculateHeight(*node);
-	return rebalanceNode(*node);
+	recalculateHeight(*node); //Setting the height of each node
+	return rebalanceNode(*node); //Rebalancing the AVL Tree
 }
 //Handling deletion of a node that has 1 or 0 childs.
 template <class T> void AVLTree<T>::deleteNode(TreeNode<T>& node) {
@@ -115,7 +115,7 @@ template <class T> void AVLTree<T>::purge(T value) {
 
 			T temp = nodeForDeletion.value; // Exchanging the value of the node for deletion with the smallest child of the right subtree
 			nodeForDeletion.value = smallestChild->value;
-			smallestChild->value = temp; // TODO: CHECK THAT THIS DOES WORK
+			smallestChild->value = temp;
 
 			returnNode = smallestChild->parent;
 			deleteNode(*smallestChild);
@@ -129,9 +129,9 @@ template <class T> void AVLTree<T>::purge(T value) {
 	catch (char const* notFound) {
 		return;
 	}
-	
 
-	
+
+
 
 }
 
@@ -140,28 +140,28 @@ template <class T> T& AVLTree<T>::search(T value) {
 	return search(*head, value).value;
 }
 
-template <class T> TreeNode<T>& AVLTree<T>::search(TreeNode<T>& node, T& value) {
+template <class T> TreeNode<T>& AVLTree<T>::search(TreeNode<T>& node, T& value) { //Searching the nodes of the tree to find a value
 	if (&node == nullptr) {
 		throw "notFound";
 	}
 	else if (value == node.value) {
 		return node;
 	}
-	else if (value < node.value) {
+	else if (value < node.value) { //If the requested value is smaller than the current node,we search left of the node
 		return search(*node.pLeft, value);
 	}
-	else {
+	else { //If the requested value is larger than the current node,we search right of the node
 		return search(*node.pRight, value);
 	}
 }
 
 template <class T> void AVLTree<T>::forEach(std::function<void(T& value)> callback) {
-	inOrder(head, [&](TreeNode<T>& node) {
+	inOrder(head, [&](TreeNode<T>& node) { //Searching the neighbors of the node
 		callback(node.value);
 	});
 }
 
-template <class T> void AVLTree<T>::preOrder(TreeNode<T>* node, std::function<void(TreeNode<T>& value)> callback) {
+template <class T> void AVLTree<T>::preOrder(TreeNode<T>* node, std::function<void(TreeNode<T>& value)> callback) { //Using preOrder method to go through the contents of the AVL Tree
 	if (node == nullptr) {
 		return;
 	}
@@ -170,7 +170,7 @@ template <class T> void AVLTree<T>::preOrder(TreeNode<T>* node, std::function<vo
 	preOrder(node->pRight, callback);
 }
 
-template <class T> void AVLTree<T>::inOrder(TreeNode<T>* node, std::function<void(TreeNode<T>& value)> callback) {
+template <class T> void AVLTree<T>::inOrder(TreeNode<T>* node, std::function<void(TreeNode<T>& value)> callback) { //Using inOrder method to go through the contents of the AVL Tree
 	if (node == nullptr) {
 		return;
 	}
@@ -179,7 +179,7 @@ template <class T> void AVLTree<T>::inOrder(TreeNode<T>* node, std::function<voi
 	inOrder(node->pRight, callback);
 }
 
-template <class T> void AVLTree<T>::postOrder(TreeNode<T>* node, std::function<void(TreeNode<T>& value)> callback) {
+template <class T> void AVLTree<T>::postOrder(TreeNode<T>* node, std::function<void(TreeNode<T>& value)> callback) {  //Using postOrder method to go through the contents of the AVL Tree
 	if (node == nullptr) {
 		return;
 	}
@@ -188,7 +188,7 @@ template <class T> void AVLTree<T>::postOrder(TreeNode<T>* node, std::function<v
 	callback(*node);
 }
 
-template <class T> TreeNode<T>& AVLTree<T>::LRotation(TreeNode<T>& node) {
+template <class T> TreeNode<T>& AVLTree<T>::LRotation(TreeNode<T>& node) { //Using the Left Rotation to rebalance the AVL Tree
 	if (node.parent != nullptr) {
 		if (node.isRightOfParent()) {
 			node.parent->setRight(*node.pRight);
@@ -211,7 +211,7 @@ template <class T> TreeNode<T>& AVLTree<T>::LRotation(TreeNode<T>& node) {
 	return temp;
 }
 
-template <class T> TreeNode<T>& AVLTree<T>::RRotation(TreeNode<T>& node) {
+template <class T> TreeNode<T>& AVLTree<T>::RRotation(TreeNode<T>& node) { //Using the Right Rotation to rebalance the AVL Tree
 	if (node.parent != nullptr) {
 		if (!node.isRightOfParent()) {
 			node.parent->setLeft(*node.pLeft);
@@ -234,7 +234,7 @@ template <class T> TreeNode<T>& AVLTree<T>::RRotation(TreeNode<T>& node) {
 	return temp;
 }
 
-template <class T> TreeNode<T>& AVLTree<T>::LRRotation(TreeNode<T>& node) {
+template <class T> TreeNode<T>& AVLTree<T>::LRRotation(TreeNode<T>& node) { //Using the Left-Right Rotation to rebalance the AVL Tree
 	TreeNode<T>& x = node;
 	TreeNode<T>& y = *node.pLeft;
 	TreeNode<T>& z = *node.pLeft->pRight;
@@ -266,7 +266,7 @@ template <class T> TreeNode<T>& AVLTree<T>::LRRotation(TreeNode<T>& node) {
 	return z;
 }
 
-template <class T> TreeNode<T>& AVLTree<T>::RLRotation(TreeNode<T>& node) {
+template <class T> TreeNode<T>& AVLTree<T>::RLRotation(TreeNode<T>& node) { //Using the Right-Left Rotation to rebalance the AVL Tree
 	TreeNode<T>& x = node;
 	TreeNode<T>& y = *node.pRight;
 	TreeNode<T>& z = *node.pRight->pLeft;
@@ -298,7 +298,7 @@ template <class T> TreeNode<T>& AVLTree<T>::RLRotation(TreeNode<T>& node) {
 	return z;
 }
 
-template <class T> TreeNode<T>& AVLTree<T>::findSonForRebalance(TreeNode<T>& node) {
+template <class T> TreeNode<T>& AVLTree<T>::findSonForRebalance(TreeNode<T>& node) { //Finds the highest child that is part of the rebalancing of the AVL Tree
 	int heightDifference = node.heightOfLeft() - node.heightOfRight();
 	if (heightDifference > 0) {
 		return *node.pLeft;
@@ -314,11 +314,11 @@ template <class T> TreeNode<T>& AVLTree<T>::findSonForRebalance(TreeNode<T>& nod
 	}
 }
 
-template <class T> TreeNode<T>& AVLTree<T>::rebalanceNode(TreeNode<T>& node) {
+template <class T> TreeNode<T>& AVLTree<T>::rebalanceNode(TreeNode<T>& node) { //Rebalancing the AVL Tree, and calling the right function to do it
 	TreeNode<T>* oldNodeParent = node.parent;
 	TreeNode<T>* newRoot = &node;
 	int heightDifference = node.heightOfLeft() - node.heightOfRight();
-	if (heightDifference < -1 || heightDifference > 1) {
+	if (heightDifference < -1 || heightDifference > 1) { //Checking if there's a need to rebalance the AVL Treee
 		TreeNode<T>& y = findSonForRebalance(node);
 		TreeNode<T>& z = findSonForRebalance(y);
 		if (!y.isRightOfParent() && !z.isRightOfParent()) {
@@ -344,7 +344,7 @@ template <class T> TreeNode<T>& AVLTree<T>::rebalanceNode(TreeNode<T>& node) {
 	return *newRoot;
 }
 
-template <class T> int AVLTree<T>::recalculateHeight(TreeNode<T>& node) {
+template <class T> int AVLTree<T>::recalculateHeight(TreeNode<T>& node) { //Setting the height of the Node
 	if (&node == nullptr) {
 		return 0;
 	}

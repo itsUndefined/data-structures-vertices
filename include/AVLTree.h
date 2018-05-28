@@ -2,33 +2,33 @@
 #include "Node.h"
 
 template <class T> struct TreeNode {
-	TreeNode(T& value) {
+	TreeNode(T& value) { //Creating the Node of the AVL Tree
 		this->value = value;
 		this->pLeft = nullptr;
 		this->pRight = nullptr;
 		this->parent = nullptr;
 	};
-	void setRight(TreeNode<T>& value) {
+	void setRight(TreeNode<T>& value) { //Setting the right child of the node
 		this->pRight = &value;
 		this->pRight->parent = this;
 	}
-	void setLeft(TreeNode<T>& value) {
+	void setLeft(TreeNode<T>& value) { //Setting the left child of the node
 		this->pLeft = &value;
 		this->pLeft->parent = this;
 	}
-	bool isRightOfParent() {
+	bool isRightOfParent() { //Checking if this node is the right child of its parent
 		if (this->parent == nullptr) {
 			return false;
 		}
 		return this->parent->pRight == this;
 	}
-	int heightOfLeft() {
+	int heightOfLeft() { //Setting the height of the left child
 		if (this->pLeft == nullptr) {
 			return 0;
 		}
 		return this->pLeft->height;
 	}
-	int heightOfRight() {
+	int heightOfRight() { //Setting the height of the right child
 		if (this->pRight == nullptr) {
 			return 0;
 		}
@@ -42,7 +42,7 @@ template <class T> struct TreeNode {
 };
 
 template <class T> class AVLTree {
-	
+
 	public:
 		AVLTree();
 		AVLTree(const AVLTree& obj);

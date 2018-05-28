@@ -1,6 +1,6 @@
 #ifndef NODE_H
 #define NODE_H
-template <class T> class Node {
+template <class T> class Node { //Creates a Node of a dat
 	public:
 		Node() {
 			this->id = -1;
