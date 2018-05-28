@@ -8,15 +8,15 @@ template <class T> HashTable<T>::HashTable() { //Creating the HashTable
 }
 
 template <class T> void HashTable<T>::insert(T value) { //Inserting Values in the hashtable. If the hashtable is full more than 50%, we double its size
-	unsigned int index = this->hash(value);
+	unsigned int i = this->hash(value);
 	while (true) {
-		if (this->data[index] == -1) {
-			this->data[index] = value;
+		if (this->data[i] == -1) {
+			this->data[i] = value;
 			break;
 		}
-		index++;
-		if (index == this->data.size()) {
-			index = 0;
+		i++;
+		if (i == this->data.size()) {
+			i = 0;
 		}
 	}
 	this->amount++;
@@ -27,19 +27,19 @@ template <class T> void HashTable<T>::insert(T value) { //Inserting Values in th
 
 template <class T> void HashTable<T>::purge(T value) { //Deleting a value of the hash table and changing the size of it accordingly
 	unsigned int i = hash(value);
-	while (true) {
-		if (value == this->data[i]) {
-			this->data[i] = -1;
-			this->amount--;
-			while (true) {
+	while (true) { //While the value is not found
+		if (value == this->data[i]) { //The value for deletion was found
+			this->data[i] = -1; //Remove the value
+			this->amount--; //Update the amount of values in the HashTable
+			while (true) { //While there is no empty space after the deleted value
 				i++;
-				if (i == this->data.size()) {
+				if (i == this->data.size()) { //If we reach the end of the HashTable continue from the beginning
 					i = 0;
 				}
-				else if (this->data[i] == -1) {
+				else if (this->data[i] == -1) { //Stop when an empty space was found
 					return;
 				}
-				else {
+				else { //remove and reinsert the value to go to the correct position
 					T temp = this->data[i];
 					this->data[i] = -1;
 					this->amount--;
@@ -47,7 +47,7 @@ template <class T> void HashTable<T>::purge(T value) { //Deleting a value of the
 				}
 			}
 		}
-		else if (this->data[i] == -1) {
+		else if (this->data[i] == -1) { //The value for deletion was not found
 			return;
 		}
 		i++;
