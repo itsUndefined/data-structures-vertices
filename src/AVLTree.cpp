@@ -1,4 +1,4 @@
-#include "../include/AVLTree.h"
+#include "AVLTree.h"
 
 template <class T> AVLTree<T>::AVLTree() {
 	head = nullptr;
@@ -31,11 +31,7 @@ template <class T> void AVLTree<T>::insert(T value) {
 		head = new TreeNode<T>(value);
 		return;
 	}
-
-	TreeNode<T>& insertedNode = insert(head, value);
-	if (insertedNode.parent == nullptr) {
-		head = &insertedNode;
-	}
+	insert(head, value);
 }
 
 template <class T> TreeNode<T>& AVLTree<T>::insert(TreeNode<T>* node, T& value) {
@@ -45,83 +41,97 @@ template <class T> TreeNode<T>& AVLTree<T>::insert(TreeNode<T>* node, T& value) 
 	else if (value < node->value) {
 		node->pLeft = &insert(node->pLeft, value);
 		node->pLeft->parent = node;
-		//node->height = node->heightOfLeft() == node->height ? node->height + 1 : node->height;
 	}
 	else if (value > node->value) {
 		node->pRight = &insert(node->pRight, value);
 		node->pRight->parent = node;
-		//node->height = node->heightOfRight() == node->height ? node->height + 1 : node->height;
 	}
 
-	//recalculateHeight(*node);
 	recalculateHeight(*node);
-	TreeNode<T>* oldNodeParent = node->parent;
-	TreeNode<T>& newNode = rebalanceNode(*node);
-	newNode.parent = oldNodeParent;
-	return newNode;
-
+	return rebalanceNode(*node);
+}
+//Handling deletion of a node that has 1 or 0 childs.
+template <class T> void AVLTree<T>::deleteNode(TreeNode<T>& node) {
+	if (node.parent == nullptr) {
+		TreeNode<T>* newRoot = node.pLeft != nullptr ? node.pLeft : node.pRight;
+		if (newRoot != nullptr) {
+			newRoot->parent = nullptr;
+		}
+	}
+	else {
+		TreeNode<T>* parent = node.parent;
+		TreeNode<T>* nonNullChild = node.pLeft != nullptr ? node.pLeft : node.pRight;
+		if (node.isRightOfParent()) {
+			if (nonNullChild != nullptr) {
+				parent->setRight(*nonNullChild);
+			}
+			else {
+				parent->pRight = nullptr;
+			}
+		}
+		else {
+			if (nonNullChild != nullptr) {
+				parent->setLeft(*nonNullChild);
+			}
+			else {
+				parent->pLeft = nullptr;
+			}
+		}
+	}
+	delete &node;
 }
 
 template <class T> void AVLTree<T>::purge(T value) {
 	try {
-		TreeNode<T> nodeForDeletion = search(*head, value);
+		TreeNode<T>& nodeForDeletion = search(*head, value);
 
-		if (nodeForDeletion.pLeft == nullptr && nodeForDeletion.pRight == nullptr) { // No children present
-			if (nodeForDeletion.value < nodeForDeletion.parent->value) {
-				nodeForDeletion.parent->pLeft = nullptr;
-			}
-			else {
-				nodeForDeletion.parent->pRight = nullptr;
-			}
-		}
+		TreeNode<T>* returnNode;
 
-		if (nodeForDeletion.pLeft != nullptr && nodeForDeletion.pRight != nullptr) { // Both child present
-			TreeNode<T>* biggestChild = nodeForDeletion.pLeft;
-			while (true) {
-				if (biggestChild->pRight != nullptr) {
-					biggestChild = biggestChild->pRight;
-				}
-				break;
+		if (nodeForDeletion.pLeft == nullptr || nodeForDeletion.pRight == nullptr) { // One or zero childs
+			if (nodeForDeletion.pLeft != nullptr) {
+				returnNode = nodeForDeletion.pLeft;
 			}
-			if (biggestChild->pLeft != nullptr) { // The biggest child from the left side also has a child.
-				if (biggestChild->value < biggestChild->parent->value) {
-					biggestChild->parent->pLeft = biggestChild->pLeft;
-				}
-				else {
-					biggestChild->parent->pRight = biggestChild->pLeft;
-				}
-				biggestChild->pLeft->parent = biggestChild->parent; // Moving the child of the biggest child to the biggest child position.
-			}
-			if (nodeForDeletion.value < nodeForDeletion.parent->value) { // Moving the biggest child to the deleted elelements position.
-				nodeForDeletion.parent->pLeft = biggestChild;
+			else if (nodeForDeletion.pRight != nullptr) {
+				returnNode = nodeForDeletion.pRight;
 			}
 			else {
-				nodeForDeletion.parent->pRight = biggestChild;
+				returnNode = nodeForDeletion.parent;
 			}
-			biggestChild->parent = nodeForDeletion.parent;
+			deleteNode(nodeForDeletion);
+			if (returnNode == nullptr) { // The avltree is empty
+				head = nullptr;
+			}
+			while (returnNode != nullptr) {
+				recalculateHeight(*returnNode);
+				rebalanceNode(*returnNode);
+				returnNode = returnNode->parent;
+			}
 		}
+		else { // Has two children
+			TreeNode<T>* smallestChild = nodeForDeletion.pRight; // Will get the smallest child of the right subtree
+			while (smallestChild->pLeft != nullptr) {
+				smallestChild = smallestChild->pLeft;
+			}
 
-		if (nodeForDeletion.pLeft == nullptr) { // One or the other is present
-			if (nodeForDeletion.value < nodeForDeletion.parent->value) {
-				nodeForDeletion.parent->pLeft = nodeForDeletion.pRight;
-			}
-			else {
-				nodeForDeletion.parent->pRight = nodeForDeletion.pRight;
-			}
-		}
-		else if (nodeForDeletion.pRight == nullptr) {
-			if (nodeForDeletion.value < nodeForDeletion.parent->value) {
-				nodeForDeletion.parent->pLeft = nodeForDeletion.pLeft;
-			}
-			else {
-				nodeForDeletion.parent->pRight = nodeForDeletion.pLeft;
+			T temp = nodeForDeletion.value; // Exchanging the value of the node for deletion with the smallest child of the right subtree
+			nodeForDeletion.value = smallestChild->value;
+			smallestChild->value = temp; // TODO: CHECK THAT THIS DOES WORK
+
+			returnNode = smallestChild->parent;
+			deleteNode(*smallestChild);
+			while (returnNode != nullptr) {
+				recalculateHeight(*returnNode);
+				rebalanceNode(*returnNode);
+				returnNode = returnNode->parent;
 			}
 		}
-		delete &nodeForDeletion;
 	}
 	catch (char const* notFound) {
 		return;
 	}
+	
+
+	
 
 }
 
@@ -130,7 +140,7 @@ template <class T> T& AVLTree<T>::search(T value) {
 	return search(*head, value).value;
 }
 
-template <class T> TreeNode<T>& AVLTree<T>::search(TreeNode<T>& node, T value) {
+template <class T> TreeNode<T>& AVLTree<T>::search(TreeNode<T>& node, T& value) {
 	if (&node == nullptr) {
 		throw "notFound";
 	}
@@ -305,6 +315,7 @@ template <class T> TreeNode<T>& AVLTree<T>::findSonForRebalance(TreeNode<T>& nod
 }
 
 template <class T> TreeNode<T>& AVLTree<T>::rebalanceNode(TreeNode<T>& node) {
+	TreeNode<T>* oldNodeParent = node.parent;
 	TreeNode<T>* newRoot = &node;
 	int heightDifference = node.heightOfLeft() - node.heightOfRight();
 	if (heightDifference < -1 || heightDifference > 1) {
@@ -326,7 +337,10 @@ template <class T> TreeNode<T>& AVLTree<T>::rebalanceNode(TreeNode<T>& node) {
 		recalculateHeight(*newRoot->pRight);
 		recalculateHeight(*newRoot);
 	}
-
+	newRoot->parent = oldNodeParent;
+	if (oldNodeParent == nullptr) {
+		head = newRoot;
+	}
 	return *newRoot;
 }
 

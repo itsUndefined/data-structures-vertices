@@ -2,9 +2,9 @@
 #include <string>
 #include <fstream>
 
-#include "./include/CommandReader.h"
+#include "CommandReader.h"
 
-#include "./include/Graph.h"
+#include "Graph.h"
 
 
 using namespace std;
@@ -32,7 +32,6 @@ int main(int argc, char **argv) {
 		cerr << "Invalid argument given. Please use one argument of value 1, 2 or 3 to select data structure";
 		return -1;
 	}
-
 	system("PAUSE");
 }
 
@@ -48,15 +47,24 @@ template <class T, class Y> void readData(Graph<T, Y>* graph) {
 		input >> node >> neighbor;
 		graph->insertEdge(node, neighbor);
 	}
-
+		
 	input.close();
 }
 
 
 template <class T, class Y> void executeCommands() {
 	Graph<T, Y> graph;
+	
 	string selectedCommand;
 	int node, neighbor;
+
+	ofstream output;
+	output.open("output.txt");
+	if (!output.is_open()) {
+		cerr << "Error opening output.txt" << endl;
+		return;
+	}
+
 	try {
 		CommandReader commandreader;
 
@@ -71,16 +79,20 @@ template <class T, class Y> void executeCommands() {
 				graph.deleteEdge(node, neighbor);
 			}
 			else if (selectedCommand == "FIND_NEIGHBORS") {
-				graph.findNeighbors(node); // OUTPUT.TXT
+				output << "Neighbors of node " << node << ": ";
+				graph.showNeighbors(node, output);
+				output << endl;
 			}
 			else if (selectedCommand == "FIND_NUM_CONNECTED_COMPONENTS") {
-				cout << graph.depthFirstSearch() << endl; // OUTPUT.TXT
+				cout << "finished reading" << endl;
+				output << "Number of connected components: " << graph.depthFirstSearch() << endl;
 			}
-
+			
 		}
 	}
 	catch (char const* error) {
-		cerr << error;
+		cerr << error << endl;
+		return;
 	}
 
 

@@ -2,9 +2,6 @@
 #include "Node.h"
 
 template <class T> struct TreeNode {
-	TreeNode() {
-
-	}
 	TreeNode(T& value) {
 		this->value = value;
 		this->pLeft = nullptr;
@@ -23,7 +20,7 @@ template <class T> struct TreeNode {
 		if (this->parent == nullptr) {
 			return false;
 		}
-		return this->parent->value < this->value;
+		return this->parent->pRight == this;
 	}
 	int heightOfLeft() {
 		if (this->pLeft == nullptr) {
@@ -58,7 +55,8 @@ template <class T> class AVLTree {
 	private:
 		TreeNode<T>* head;
 		TreeNode<T>& insert(TreeNode<T>* node, T& value);
-		TreeNode<T>& search(TreeNode<T>& node, T value);
+		void deleteNode(TreeNode<T>& node);
+		TreeNode<T>& search(TreeNode<T>& node, T& value);
 		void preOrder(TreeNode<T>* node, std::function<void(TreeNode<T>& value)> callback);
 		void inOrder(TreeNode<T>* node, std::function<void(TreeNode<T>& value)> callback);
 		void postOrder(TreeNode<T>* node, std::function<void(TreeNode<T>& value)> callback);

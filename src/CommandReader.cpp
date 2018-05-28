@@ -1,4 +1,4 @@
-#include "../include/CommandReader.h"
+#include "CommandReader.h"
 
 CommandReader::CommandReader() {
 	this->file.open("commands.txt");

@@ -7,14 +7,13 @@
 
 template <class T> class Array {
 	public:
-		Array();
-		~Array();
 		void insert(T value);
 		void purge(T value);
 		T& search(T value);
 		void forEach(std::function<void(T& value)>);
 	private:
 		std::vector<T> data;
+		int binarySearch(T value);
 };
 
 #endif // ARRAY_H

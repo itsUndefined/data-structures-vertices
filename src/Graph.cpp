@@ -1,5 +1,5 @@
-#include "../include/Graph.h"
-#include <iostream>
+#include "Graph.h"
+
 template <class Structure, class Instance> Graph<Structure, Instance>::Graph() {
 
 }
@@ -20,7 +20,6 @@ template <class Structure, class Instance> void Graph<Structure, Instance>::inse
 		}
 	}
 	catch (char const* notFound) {
-		notFound;
 		node.neighbors.insert(nodeB);
 		this->data.insert(node);
 	}
@@ -34,36 +33,99 @@ template <class Structure, class Instance> void Graph<Structure, Instance>::inse
 			temp.neighbors.insert(nodeA);
 		}
 	} catch (char const* notFound) {
-		notFound;
 		node1.neighbors.insert(nodeA);
 		this->data.insert(node1);
 	}
 }
 
 template <class Structure, class Instance> void Graph<Structure, Instance>::deleteEdge(int nodeA, int nodeB) {
-	Instance node(nodeA);
+	Instance node1(nodeA);
+	Instance node2(nodeB);
 	try {
-		data.search(node).neighbors.purge(nodeB);
+		data.search(node1).neighbors.purge(nodeB);
+		data.search(node2).neighbors.purge(nodeA);
 	} catch (char const* notFound) {
-		notFound;
-		throw "notFound";
+		// we don't care silence the error....
 	}
 }
 
-template <class Structure, class Instance> int* Graph<Structure, Instance>::findNeighbors(int nodeA) {
+template <class Structure, class Instance> void Graph<Structure, Instance>::showNeighbors(int nodeA, std::ostream& output) {
 	Instance node(nodeA);
-	try {
-		int* returningData = new int[10];
-		data.search(node).neighbors.forEach([](int node) {
-			std::cout << node << std::endl;
-		});
-		return returningData;
-	}
-	catch (char const* notFound) {
-		notFound;
-		throw "notFound";
-	}
+	data.search(node).neighbors.forEach([&](int node) {
+		output << node << ", ";
+	});
+}
 
+void Graph<HashTableImplementation, NodeWithHashTable>::showNeighbors(int nodeA, std::ostream& output) {
+	NodeWithHashTable node(nodeA);
+	std::vector<int> sortedValues;
+	data.search(node).neighbors.forEach([&](int node) {
+		sortedValues.push_back(node);
+	});
+	this->quickSort(sortedValues);
+	for (typename std::vector<int>::iterator i = sortedValues.begin(); i != sortedValues.end(); ++i) {
+		output << *i << ", ";
+	}
+}
+
+template  <class Structure, class Instance> void Graph<Structure, Instance>::quickSort(std::vector<int>& arr) {
+	std::vector<int> stack;
+	int left, right;
+	stack.push_back(arr.size() - 1);
+	stack.push_back(0);
+
+	while (stack.size()) {
+		left = stack.back();
+		stack.pop_back();
+		right = stack.back();
+		stack.pop_back();
+
+		if (right <= left) {
+			continue;
+		}
+		int i = left - 1;
+		int j = right;
+		int temp;
+		int o = arr[j];
+
+		while (true) {
+			while (arr[++i] < o) {
+				if (i == right) {
+					break;
+				}
+			}
+
+			while (o < arr[--j]) {
+				if (j == left) {
+					break;
+				}
+			}
+
+			if (i >= j) {
+				break;
+			}
+
+			temp = arr[i];
+			arr[i] = arr[j];
+			arr[j] = temp;
+		}
+		temp = arr[i];
+		arr[i] = arr[right];
+		arr[right] = temp;
+
+		if (i - left > right - i) {
+			stack.push_back(i - 1);
+			stack.push_back(left);
+			stack.push_back(right);
+			stack.push_back(i + 1);
+		}
+		else {
+			stack.push_back(right);
+			stack.push_back(i + 1);
+			stack.push_back(i - 1);
+			stack.push_back(left);
+		}
+	}
 }
 
 template <class Structure, class Instance> int Graph<Structure, Instance>::depthFirstSearch() {
@@ -95,8 +157,6 @@ template <class Structure, class Instance> void Graph<Structure, Instance>::dept
 		}
 	}
 }
-
-
 
 // Tell the compiler for what types to compile the class.
 template class Graph<ArrayImplementation, NodeWithArray>;

@@ -1,6 +1,7 @@
 #ifndef GRAPH_H
 #define GRAPH_H
 
+#include <iostream>
 #include "Array.h"
 #include "AVLTree.h"
 #include "HashTable.h"
@@ -21,10 +22,11 @@ template <class Structure, class Instance> class Graph {
 		~Graph();
 		void insertEdge(int nodeA, int nodeB);
 		void deleteEdge(int nodeA, int nodeB);
-		int* findNeighbors(int node);
+		void showNeighbors(int node, std::ostream& output);
 		int depthFirstSearch();
 	private:
 		Structure data;
+		void quickSort(std::vector<int>& arr);
 		void depthFirstSearchVisit(Instance& node);
 };
 

@@ -1,14 +1,10 @@
-#include "../include/HashTable.h"
+#include "HashTable.h"
 
 
 
 template <class T> HashTable<T>::HashTable() {
 	this->amount = 0;
 	data.resize(5, -1);
-}
-
-template <class T> HashTable<T>::~HashTable() {
-	//dtor
 }
 
 template <class T> void HashTable<T>::insert(T value) {
@@ -30,29 +26,32 @@ template <class T> void HashTable<T>::insert(T value) {
 }
 
 template <class T> void HashTable<T>::purge(T value) {
-	typename std::vector<T>::iterator i = data.begin();
-	while (i != data.end()) {
-		if (value == *i) {
-			*i = -1;
+	int i = hash(value);
+	while (true) {
+		if (value == this->data[i]) {
+			this->data[i] = -1;
 			this->amount--;
 			while (true) {
 				i++;
-				if (i == data.end()) {
-					i = data.begin();
-				}
-				else if (*i == -1) {
+				if (i == this->data.size()) {
+					i = 0;
+				} 
+				else if (this->data[i] == -1) {
 					return;
 				}
 				else {
-					T temp = *i;
-					*i = -1;
+					T temp = this->data[i];
+					this->data[i] = -1;
 					this->amount--;
 					this->insert(temp);
 				}
 			}
 		}
+		else if (this->data[i] == -1) {
+			return;
+		}
 		i++;
-	}
+	}	
 }
 
 template <class T> T& HashTable<T>::search(T value) {
@@ -60,7 +59,7 @@ template <class T> T& HashTable<T>::search(T value) {
 	while (true) {
 		if (this->data[index] == value) {
 			return this->data[index];
-		}
+		} 
 		else if (this->data[index] == -1) {
 			throw "notFound";
 		}
