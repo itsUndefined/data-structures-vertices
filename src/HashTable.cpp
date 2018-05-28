@@ -39,7 +39,7 @@ template <class T> void HashTable<T>::purge(T value) { //Deleting a value of the
 				else if (this->data[i] == -1) { //Stop when an empty space was found
 					return;
 				}
-				else { //remove and reinsert the value to go to the correct position
+				else { //Remove and reinsert the value to go to the correct position
 					T temp = this->data[i];
 					this->data[i] = -1;
 					this->amount--;
