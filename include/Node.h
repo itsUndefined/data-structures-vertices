@@ -1,6 +1,6 @@
 #ifndef NODE_H
 #define NODE_H
-template <class T> class Node { //Creates a Node of a dat
+template <class T> class Node { //Creates a Node of a data structure
 	public:
 		Node() {
 			this->id = -1;
@@ -8,8 +8,11 @@ template <class T> class Node { //Creates a Node of a dat
 		Node(int id) {
 			this->id = id;
 		};
+
 		int id;
 		T neighbors;
+
+		//Overload of various important operators
 		bool operator==(Node& target) {
 			return id == target.id;
 		};

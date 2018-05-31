@@ -11,7 +11,7 @@ CommandReader::~CommandReader() {
 	this->file.close();
 }
 
-bool CommandReader::readNextCommand(std::string& command, int& node, int& neighbor) {
+bool CommandReader::readNextCommand(std::string& command, int& node, int& neighbor) {//Returns T/F depending on if there are unprocessed commands remaining in the file
 	if (this->file.eof()) {
 		return false;
 	}

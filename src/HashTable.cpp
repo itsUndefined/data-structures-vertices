@@ -1,7 +1,5 @@
 #include "HashTable.h"
 
-
-
 template <class T> HashTable<T>::HashTable() { //Creating the HashTable
 	this->amount = 0;
 	data.resize(5, -1);

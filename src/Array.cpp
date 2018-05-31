@@ -2,7 +2,7 @@
 
 template <class T> void Array<T>::insert(T value) { //Inserting the value in the Array
 	typename std::vector<T>::iterator i;
-	for (i = data.begin(); i != data.end(); i++) {
+	for (i = data.begin(); i != data.end(); i++) {//Searching for the correct position to insert the value so that the array remains sorted
 		if (*i > value) {
 			break;
 		}

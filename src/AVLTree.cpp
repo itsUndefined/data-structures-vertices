@@ -50,7 +50,7 @@ template <class T> TreeNode<T>& AVLTree<T>::insert(TreeNode<T>* node, T& value) 
 	recalculateHeight(*node); //Setting the height of each node
 	return rebalanceNode(*node); //Rebalancing the AVL Tree
 }
-//Handling deletion of a node that has 1 or 0 childs.
+//Handling deletion of a node that has 1 or 0 children.
 template <class T> void AVLTree<T>::deleteNode(TreeNode<T>& node) {
 	if (node.parent == nullptr) {
 		TreeNode<T>* newRoot = node.pLeft != nullptr ? node.pLeft : node.pRight;
